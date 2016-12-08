@@ -1,11 +1,23 @@
 @echo OFF
 
+:://////////////////////////
+:: Main Settings start
+::////////////////////////
+
+	set logfile="%tmp%\filebot_automatic_updater.txt"
+  set FBpath=C:\Users\JourneyOver\Dropbox\Public\Folders\Filebot
+
+:://////////////////////////
+:: Main Settings end
+::////////////////////////
+
 GOTO EndComment
-	FileBot Automatic jar file Updater v1.4.1
+	FileBot Automatic jar file Updater v1.5.0
 
 	Written by CapriciousSage (Ithiel)
+	Fixed up by JourneyOver
 	With assistance from rednoah and Akkifokkusu
-	Requires Filebot to be installed in C:\Program Files\FileBot\
+	Requires 7zip to be installed
 	This file requires Administrative Privileges
 	Note: The only file that this tool updates is FileBot.jar
 
@@ -16,7 +28,7 @@ GOTO EndComment
 	Please Donate via PayPal to reinhard.pointner@gmail.com
 
 	No warranty given or implied, use at your own risk.
-	Last Updated: 14/01/2014
+	Last Updated: 12/07/2016
 :EndComment
 
 :ADMIN-CHECK
@@ -35,7 +47,7 @@ GOTO EndComment
 	:DirCheck1
 
 		copy /Y NUL "%~dp0\.writable" > NUL 2>&1 && set WRITEOK=1
-		IF DEFINED WRITEOK ( 
+		IF DEFINED WRITEOK (
 			del "%~dp0\.writable"
 			GOTO UACPrompt1
 		 ) else (
@@ -46,7 +58,7 @@ GOTO EndComment
 	:DirCheck2
 
 		copy /Y NUL "%USERPROFILE%\.writable" > NUL 2>&1 && set WRITEOK=1
-		IF DEFINED WRITEOK ( 
+		IF DEFINED WRITEOK (
 			del "%USERPROFILE%\.writable"
 			GOTO UACPrompt2
 		 ) else (
@@ -57,7 +69,7 @@ GOTO EndComment
 	:DirCheck3
 
 		copy /Y NUL "%tmp%\.writable" > NUL 2>&1 && set WRITEOK=1
-		IF DEFINED WRITEOK ( 
+		IF DEFINED WRITEOK (
 			del "%tmp%\.writable"
 			GOTO UACPrompt3
 		 ) else (
@@ -129,44 +141,57 @@ GOTO EndComment
 		CD /D "%~dp0"
 	:--------------------------------------
 
-GOTO DOWNLOAD
+  GOTO DOWNLOAD
 
+  :DOWNLOAD
 
-:DOWNLOAD
+  set downloadURL="http://downloads.sourceforge.net/project/filebot/filebot/HEAD/FileBot.jar.xz"
 
-	set logfile="%tmp%\filebot_automatic_updater.txt"
-	set downloadURL="http://sourceforge.net/projects/filebot/files/filebot/HEAD/FileBot.jar"
-
-	echo --------------------------- >> %logfile%
+  echo --------------------------- >> %logfile%
 	echo FileBot Automatic Jar File Updater >> %logfile%
 	echo Date: %date% >> %logfile%
 	echo --------------------------- >> %logfile%
 	echo. >> %logfile%
 
-	echo Downloading Latest Filebot.jar from %downloadURL% >> %logfile%
-	bitsadmin.exe /transfer "Download_FileBot" /priority foreground %downloadURL% "%tmp%\FileBot.jar"
+  echo Downloading Latest Filebot.jar from %downloadURL% >> %logfile%
+	bitsadmin.exe /transfer "Download_FileBot" /priority foreground %downloadURL% "%tmp%\FileBot.jar.xz"
 
-	if not errorlevel 0 GOTO ERR1
-	
+  if not errorlevel 0 GOTO ERR1
+
 	echo Download successful. >> %logfile%
 
-	IF EXIST "C:\Program Files\FileBot\FileBot_old.jar" (
-		echo Deleting "C:\Program Files\FileBot\FileBot_old.jar" >> %logfile%
-		del "C:\Program Files\FileBot\FileBot_old.jar"
+  	IF EXIST "C:\Program Files\7-Zip\7z.exe" (
+		echo setting "C:\Program Files\7-Zip\" >> %logfile%
+		set path="C:\Program Files\7-Zip\"
+	) ELSE (
+		echo setting "C:\Program Files (x86)\7-Zip" >> %logfile%
+		set path="C:\Program Files (x86)\7-Zip"
+	)
+
+	IF EXIST "%FBpath%\FileBot_old.jar" (
+		echo Deleting "%FBpath%\FileBot_old.jar" >> %logfile%
+		del "%FBpath%\FileBot_old.jar"
 	) ELSE (
 		echo No FileBot_old.jar file to Delete >> %logfile%
 	)
 
 	echo Renaming current FileBot.jar to FileBot_old.jar >> %logfile%
-	ren "C:\Program Files\FileBot\FileBot.jar" FileBot_old.jar
+	ren "%FBpath%\FileBot.jar" FileBot_old.jar
+
+  echo Extracting filebot.jar.xz >> %logfile%
+	cd "%tmp%
+	7z e "%tmp%\FileBot.jar.xz"
 
 	echo Installing new Filebot.jar >> %logfile%
-	move "%tmp%\FileBot.jar" "C:\Program Files\FileBot\FileBot.jar"
-	
+  move "%tmp%\FileBot.jar" "%FBpath%\FileBot.jar"
+
 	echo FileBot Update Complete >> %logfile%
 
-GOTO ALLOK
+  echo Deleting filebot.jar.xz >> %logfile%
+	cd "%tmp%
+	del "%tmp%\FileBot.jar.xz"
 
+GOTO ALLOK
 
 :ERR1
 	echo **** Warning: Something Didn't Work. Please Confirm Settings **** >> %logfile%
@@ -175,12 +200,10 @@ GOTO ALLOK
 	pause>nul
 GOTO FINISH
 
-
 :ALLOK
 	echo ****** Job completed successfully ***** >> %logfile%
 	echo. >> %logfile%
 GOTO FINISH
-
 
 :FINISH
 EXIT /B
