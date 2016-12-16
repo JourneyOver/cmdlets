@@ -5,21 +5,20 @@
 ::////////////////////////
 
 	set logfile="%tmp%\filebot_automatic_updater.txt"
-  set FBpath=C:\Users\JourneyOver\Dropbox\Public\Folders\Filebot
+	set FBpath=C:\Users\JourneyOver\Dropbox\Public\Folders\Filebot
 
 :://////////////////////////
 :: Main Settings end
 ::////////////////////////
 
 GOTO EndComment
-	FileBot Automatic jar file Updater v1.5.0
+	FileBot Automatic file Updater v1.6.0
 
 	Written by CapriciousSage (Ithiel)
 	Fixed up by JourneyOver
 	With assistance from rednoah and Akkifokkusu
 	Requires 7zip to be installed
 	This file requires Administrative Privileges
-	Note: The only file that this tool updates is FileBot.jar
 
 	FileBot written by rednoah (Reinhard Pointner)
 	FileBot: http://www.filebot.net
@@ -28,7 +27,7 @@ GOTO EndComment
 	Please Donate via PayPal to reinhard.pointner@gmail.com
 
 	No warranty given or implied, use at your own risk.
-	Last Updated: 12/07/2016
+	Last Updated: 12/16/2016
 :EndComment
 
 :ADMIN-CHECK
@@ -141,55 +140,115 @@ GOTO EndComment
 		CD /D "%~dp0"
 	:--------------------------------------
 
-  GOTO DOWNLOAD
+GOTO DOWNLOAD
 
-  :DOWNLOAD
+:DOWNLOAD
 
   set downloadURL="http://downloads.sourceforge.net/project/filebot/filebot/HEAD/FileBot.jar.xz"
+  set downloadURL2="http://github.com/filebot/filebot/archive/master.zip"
 
-  echo --------------------------- >> %logfile%
-	echo FileBot Automatic Jar File Updater >> %logfile%
-	echo Date: %date% >> %logfile%
+	echo --------------------------- >> %logfile%
+	echo FileBot Automatic File Updater >> %logfile%
+	echo Date: %date% %time% >> %logfile%
 	echo --------------------------- >> %logfile%
 	echo. >> %logfile%
 
-  echo Downloading Latest Filebot.jar from %downloadURL% >> %logfile%
+	echo Downloading Latest Filebot.jar from %downloadURL% >> %logfile%
 	bitsadmin.exe /transfer "Download_FileBot" /priority foreground %downloadURL% "%tmp%\FileBot.jar.xz"
 
-  if not errorlevel 0 GOTO ERR1
+	echo Downloading Latest MediaInfo and 7-Zip native libraries from %downloadURL2% >> %logfile%
+	bitsadmin.exe /transfer "Download_FileBot2" /priority foreground %downloadURL2% "%tmp%\filebot-master.zip"
+
+	if not errorlevel 0 GOTO ERR1
 
 	echo Download successful. >> %logfile%
 
-  	IF EXIST "C:\Program Files\7-Zip\7z.exe" (
-		echo setting "C:\Program Files\7-Zip\" >> %logfile%
-		set path="C:\Program Files\7-Zip\"
+GOTO OLDBACKUPS
+
+:OLDBACKUPS
+
+	echo Deleting backups that are older than 2 weeks >> %logfile%
+	FORFILES /P "%FBpath%\Backups" /M *.* /D -14 /C "cmd /c del @file"
+
+GOTO EXTRACTION_RENAMING
+
+:EXTRACTION_RENAMING
+
+	IF EXIST "C:\Program Files\7-Zip\7z.exe" (
+	echo setting "C:\Program Files\7-Zip\" >> %logfile%
+	set path="C:\Program Files\7-Zip\"
 	) ELSE (
-		echo setting "C:\Program Files (x86)\7-Zip" >> %logfile%
-		set path="C:\Program Files (x86)\7-Zip"
+	echo setting "C:\Program Files (x86)\7-Zip" >> %logfile%
+	set path="C:\Program Files (x86)\7-Zip"
 	)
 
-	IF EXIST "%FBpath%\FileBot_old.jar" (
-		echo Deleting "%FBpath%\FileBot_old.jar" >> %logfile%
-		del "%FBpath%\FileBot_old.jar"
-	) ELSE (
-		echo No FileBot_old.jar file to Delete >> %logfile%
-	)
+	echo Renaming current "FileBot.jar" to "FileBot_old.jar" >> %logfile%
+	ren "%FBpath%\FileBot.jar" "FileBot_old.jar"
+	echo Renaming current "FileBot.cmd" to "FileBot_old.cmd" >> %logfile%
+	ren "%FBpath%\FileBot.cmd" "FileBot_old.cmd"
+	echo Renaming current "FileBot.exe" to "FileBot_old.exe" >> %logfile%
+	ren "%FBpath%\FileBot.exe" "FileBot_old.exe"
+	echo Renaming current "FileBot.l4j.ini" to "FileBot_old.l4j.ini" >> %logfile%
+	ren "%FBpath%\FileBot.l4j.ini" "FileBot_old.l4j.ini"
+	echo Renaming current "FileBot.sh" to "FileBot_old.sh" >> %logfile%
+	ren "%FBpath%\FileBot.sh" "FileBot_old.sh"
+	echo Renaming current "FileBot-launch4j.xml" to "FileBot-launch4j_old.xml" >> %logfile%
+	ren "%FBpath%\FileBot-launch4j.xml" "FileBot-launch4j_old.xml"
+	echo Renaming current "update-filebot.sh" to "update-filebot_old.sh" >> %logfile%
+	ren "%FBpath%\update-filebot.sh" "update-filebot_old.sh"
+	echo Renaming current "7-Zip-JBinding.dll" to "7-Zip-JBinding_old.dll" >> %logfile%
+	ren "%FBpath%\7-Zip-JBinding.dll" "7-Zip-JBinding_old.dll"
+	echo Renaming current "fpcalc.exe" to "fpcalc_old.exe" >> %logfile%
+	ren "%FBpath%\fpcalc.exe" "fpcalc_old.exe"
+	echo Renaming current "gcc_s_seh-1.dll" to "gcc_s_seh-1_old.dll" >> %logfile%
+	ren "%FBpath%\gcc_s_seh-1.dll" "gcc_s_seh-1_old.dll"
+	echo Renaming current "jnidispatch.dll" to "jnidispatch_old.dll" >> %logfile%
+	ren "%FBpath%\jnidispatch.dll" "jnidispatch_old.dll"
+	echo Renaming current "MediaInfo.dll" to "MediaInfo_old.dll" >> %logfile%
+	ren "%FBpath%\MediaInfo.dll" "MediaInfo_old.dll"
 
-	echo Renaming current FileBot.jar to FileBot_old.jar >> %logfile%
-	ren "%FBpath%\FileBot.jar" FileBot_old.jar
 
-  echo Extracting filebot.jar.xz >> %logfile%
+	echo Extracting filebot.jar.xz >> %logfile%
 	cd "%tmp%
-	7z e "%tmp%\FileBot.jar.xz"
+	7z x "%tmp%\FileBot.jar.xz" -y
+
+	echo Extracting filebot-master.zip >> %logfile%
+	7z x "%tmp%\filebot-master.zip" -y
+
+	echo Renaming_Extracting successful. >> %logfile%
+
+GOTO MOVEMENT&CLEANUP
+
+:MOVEMENT&CLEANUP
+
+	echo moving _old files to backup folder >> %logfile%
+	move "%FBpath%\*_old.*" "%FBpath%\Backups\"
 
 	echo Installing new Filebot.jar >> %logfile%
-  move "%tmp%\FileBot.jar" "%FBpath%\FileBot.jar"
+	move "%tmp%\FileBot.jar" "%FBpath%\FileBot.jar"
+	echo Installing other Filebot Files >> %logfile%
+	cd "%tmp%\filebot-master\installer\portable"
+	move "%tmp%\filebot-master\installer\portable\*.*" "%FBpath%\"
+	cd "%tmp%\filebot-master\lib\native\win32-x64"
+	move "%tmp%\filebot-master\lib\native\win32-x64\*.*" "%FBpath%\"
 
-	echo FileBot Update Complete >> %logfile%
-
-  echo Deleting filebot.jar.xz >> %logfile%
+	echo Deleting filebot.jar.xz >> %logfile%
 	cd "%tmp%
 	del "%tmp%\FileBot.jar.xz"
+	echo Deleting filebot-master >> %logfile%
+	RD /S /Q "%tmp%\filebot-master"
+	del "%tmp%\filebot-master.zip"
+
+	set hh=%time:~0,2%
+	if "%time:~0,1%"==" " set hh=0%hh:~1,1%
+
+	set dt=%date:~4,2%-%date:~7,2%-%date:~10,4%_%hh:~0,2%_%time:~3,2%_%time:~6,2%
+
+	echo Backing up _old files >> %logfile%
+	cd "%FBpath%\Backups"
+	7z a "backup-%dt%.zip" *_old.* -sdel
+
+	echo FileBot Update Complete >> %logfile%
 
 GOTO ALLOK
 
@@ -201,7 +260,7 @@ GOTO ALLOK
 GOTO FINISH
 
 :ALLOK
-	echo ****** Job completed successfully ***** >> %logfile%
+	echo ****** Job completed successfully at %date%-%time% ***** >> %logfile%
 	echo. >> %logfile%
 GOTO FINISH
 
