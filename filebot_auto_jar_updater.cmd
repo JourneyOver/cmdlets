@@ -157,6 +157,7 @@ GOTO DOWNLOAD
 	bitsadmin.exe /transfer "Download_FileBot" /priority foreground %downloadURL% "%tmp%\FileBot.jar.xz"
 
 	echo Downloading Latest MediaInfo and 7-Zip native libraries from %downloadURL2% >> %logfile%
+	bitsadmin.exe /SetMinRetryDelay "Download_FileBot2"
 	bitsadmin.exe /transfer "Download_FileBot2" /priority foreground %downloadURL2% "%tmp%\filebot-master.zip"
 
 	if not errorlevel 0 GOTO ERR1
@@ -255,8 +256,6 @@ GOTO ALLOK
 :ERR1
 	echo **** Warning: Something Didn't Work. Please Confirm Settings **** >> %logfile%
 	echo. >> %logfile%
-	echo Press any key to terminate install ...
-	pause>nul
 GOTO FINISH
 
 :ALLOK
