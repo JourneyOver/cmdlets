@@ -12,7 +12,7 @@
 ::////////////////////////
 
 GOTO EndComment
-	FileBot Automatic file Updater v1.6.0
+	FileBot Automatic file Updater v1.6.1
 
 	Written by CapriciousSage (Ithiel)
 	Fixed up by JourneyOver
@@ -27,7 +27,7 @@ GOTO EndComment
 	Please Donate via PayPal to reinhard.pointner@gmail.com
 
 	No warranty given or implied, use at your own risk.
-	Last Updated: 12/16/2016
+	Last Updated: 1/04/2017
 :EndComment
 
 :ADMIN-CHECK
@@ -187,14 +187,14 @@ GOTO EXTRACTION_RENAMING
 	ren "%FBpath%\FileBot.jar" "FileBot_old.jar"
 	echo Renaming current "FileBot.cmd" to "FileBot_old.cmd" >> %logfile%
 	ren "%FBpath%\FileBot.cmd" "FileBot_old.cmd"
-	echo Renaming current "FileBot.exe" to "FileBot_old.exe" >> %logfile%
-	ren "%FBpath%\FileBot.exe" "FileBot_old.exe"
-	echo Renaming current "FileBot.l4j.ini" to "FileBot_old.l4j.ini" >> %logfile%
-	ren "%FBpath%\FileBot.l4j.ini" "FileBot_old.l4j.ini"
+	echo Renaming current "FileBot.Portable.Launcher.exe" to "FileBot.Portable.Launcher_old.exe" >> %logfile%
+	ren "%FBpath%\FileBot.Portable.Launcher.exe" "FileBot.Portable.Launcher_old.exe"
+	echo Renaming current "FileBot.Portable.Launcher.l4j.ini" to "FileBot.Portable.Launcher.l4j_old.ini" >> %logfile%
+	ren "%FBpath%\FileBot.Portable.Launcher.l4j.ini" "FileBot.Portable.Launcher.l4j_old.ini"
 	echo Renaming current "FileBot.sh" to "FileBot_old.sh" >> %logfile%
 	ren "%FBpath%\FileBot.sh" "FileBot_old.sh"
-	echo Renaming current "FileBot-launch4j.xml" to "FileBot-launch4j_old.xml" >> %logfile%
-	ren "%FBpath%\FileBot-launch4j.xml" "FileBot-launch4j_old.xml"
+	echo Renaming current "FileBot-Portable-Launch4j.xml" to "FileBot-Portable-Launch4j_old.xml" >> %logfile%
+	ren "%FBpath%\FileBot-Portable-Launch4j.xml" "FileBot-Portable-Launch4j_old.xml"
 	echo Renaming current "update-filebot.sh" to "update-filebot_old.sh" >> %logfile%
 	ren "%FBpath%\update-filebot.sh" "update-filebot_old.sh"
 	echo Renaming current "7-Zip-JBinding.dll" to "7-Zip-JBinding_old.dll" >> %logfile%
