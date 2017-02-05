@@ -6,6 +6,7 @@
 
 	set logfile="%tmp%\filebot_automatic_updater.txt"
 	set FBpath=C:\Users\JourneyOver\Dropbox\Public\Folders\Filebot
+	set FBdownloader=C:\Users\JourneyOver\Desktop\Github\cmdlets\filebot_downloads.ps1
 
 :://////////////////////////
 :: Main Settings end
@@ -151,7 +152,7 @@ GOTO DOWNLOAD
 	echo. >> %logfile%
 
 	echo Downloading Latest Filebot files >> %logfile%
-	start /wait PowerShell -windowstyle hidden -NoProfile -ExecutionPolicy Bypass -Command "& 'C:\Users\JourneyOver\Desktop\Github\cmdlets\filebot_downloads.ps1'"
+	start /wait PowerShell -windowstyle hidden -NoProfile -ExecutionPolicy Bypass -Command "& '%FBdownloader%'"
 
 	echo Download successful. >> %logfile%
 
