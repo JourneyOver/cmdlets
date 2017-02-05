@@ -12,7 +12,7 @@
 ::////////////////////////
 
 GOTO EndComment
-	FileBot Automatic file Updater v1.6.1
+	FileBot Automatic file Updater v1.6.2
 
 	Written by CapriciousSage (Ithiel)
 	Fixed up by JourneyOver
@@ -27,7 +27,7 @@ GOTO EndComment
 	Please Donate via PayPal to reinhard.pointner@gmail.com
 
 	No warranty given or implied, use at your own risk.
-	Last Updated: 1/04/2017
+	Last Updated: 2/04/2017
 :EndComment
 
 :ADMIN-CHECK
@@ -144,23 +144,14 @@ GOTO DOWNLOAD
 
 :DOWNLOAD
 
-  set downloadURL="http://downloads.sourceforge.net/project/filebot/filebot/HEAD/FileBot.jar.xz"
-  set downloadURL2="http://github.com/filebot/filebot/archive/master.zip"
-
 	echo --------------------------- >> %logfile%
 	echo FileBot Automatic File Updater >> %logfile%
 	echo Date: %date% %time% >> %logfile%
 	echo --------------------------- >> %logfile%
 	echo. >> %logfile%
 
-	echo Downloading Latest Filebot.jar from %downloadURL% >> %logfile%
-	bitsadmin.exe /transfer "Download_FileBot" /priority foreground %downloadURL% "%tmp%\FileBot.jar.xz"
-
-	echo Downloading Latest MediaInfo and 7-Zip native libraries from %downloadURL2% >> %logfile%
-	bitsadmin.exe /SetMinRetryDelay "Download_FileBot2"
-	bitsadmin.exe /transfer "Download_FileBot2" /priority foreground %downloadURL2% "%tmp%\filebot-master.zip"
-
-	if not errorlevel 0 GOTO ERR1
+	echo Downloading Latest Filebot files >> %logfile%
+	start /wait PowerShell -windowstyle hidden -NoProfile -ExecutionPolicy Bypass -Command "& 'C:\Users\JourneyOver\Desktop\Github\cmdlets\filebot_downloads.ps1'"
 
 	echo Download successful. >> %logfile%
 
